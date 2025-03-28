@@ -5,6 +5,7 @@ using System;
 using TMPro;
 public class Weapon : MonoBehaviour
 {
+    public bool isActiveWeapon;
   
     //shooting
     public bool isShooting, readyToShoot;
@@ -29,6 +30,17 @@ public class Weapon : MonoBehaviour
     public int magazineSize, bulletsLeft;
     public bool isReloading;
     
+    public Vector3 spawnPosition;
+    public Vector3 spawnRotation;
+    public Vector3 spawnScale;
+
+    public enum WeaponModel
+    {
+        M4A1,
+        Skorpion
+    }
+
+    public WeaponModel thisweaponModel;
 
     public enum ShootingMode
     {
@@ -48,32 +60,33 @@ public class Weapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(bulletsLeft == 0 && isShooting){
-            SoundManager.Instance.emptySoundM4.Play();
-        }
-        if(currentShootingMode == ShootingMode.Auto)
+        if(isActiveWeapon)
         {
-            //holding left mouse down
-            isShooting = Input.GetKey(KeyCode.Mouse0);
-        }
-        else if(currentShootingMode == ShootingMode.Single || currentShootingMode == ShootingMode.Burst)
-        {
-            //clicking left mouse once
-            isShooting = Input.GetKeyDown(KeyCode.Mouse0);
-        }
-        if(Input.GetKey(KeyCode.R)&& bulletsLeft < magazineSize && isReloading == false)
-        {
-            Reload();
-        }
-        if(readyToShoot && isShooting && bulletsLeft > 0)
-        {
-            burstBulletsLeft = bulletsPerBurst;
+            if(bulletsLeft == 0 && isShooting)
+            {
+                SoundManager.Instance.emptySoundM4.Play();
+            }
+            if(currentShootingMode == ShootingMode.Auto)
+            {
+                //holding left mouse down
+                isShooting = Input.GetKey(KeyCode.Mouse0);
+            }
+            else if(currentShootingMode == ShootingMode.Single || currentShootingMode == ShootingMode.Burst)
+            {
+                //clicking left mouse once
+                isShooting = Input.GetKeyDown(KeyCode.Mouse0);
+            }
+            if(Input.GetKey(KeyCode.R)&& bulletsLeft < magazineSize && isReloading == false)
+            {
+                Reload();
+            }
+            if(readyToShoot && isShooting && bulletsLeft > 0)
+            {
+                burstBulletsLeft = bulletsPerBurst;
             
-            FireWeapon();
-        }
+                FireWeapon();
+            }
 
-        if(AmmoManager.Instance.ammoDisplay != null){
-            AmmoManager.Instance.ammoDisplay.text = $"{bulletsLeft/bulletsPerBurst}/{magazineSize/bulletsPerBurst}";
         }
     }
     private void FireWeapon()
@@ -81,7 +94,7 @@ public class Weapon : MonoBehaviour
         bulletsLeft--;
         muzzleEffect.GetComponent<ParticleSystem>().Play();
         animator.SetTrigger("RECOIL");
-        SoundManager.Instance.shootingSoundM4.Play();
+        SoundManager.Instance.PlayShootingSound(thisweaponModel);
         readyToShoot = false;
         Vector3 shootingDirection = CalculateDirectionAndSpread().normalized;
         //instantiate bullet
@@ -105,7 +118,8 @@ public class Weapon : MonoBehaviour
     }
     private void Reload()
     {
-        SoundManager.Instance.reloadingSoundM4.Play();
+        SoundManager.Instance.PlayReloadSound(thisweaponModel);
+        animator.SetTrigger("RELOAD");
         isReloading = true;
         Invoke("ReloadCompleted", reloadTime);
     }
