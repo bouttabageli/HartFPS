@@ -22,6 +22,12 @@ public class HUDManager : MonoBehaviour
      public TextMeshProUGUI lethalAmountUI;
      public Image tacticalUI;
      public TextMeshProUGUI tacticalAmountUI;
+
+     public Sprite emptySlot;
+     public Sprite greySlot;
+
+     public GameObject crosshair;
+
       private void Awake()
     {
         if(Instance != null && Instance != this)
@@ -41,8 +47,8 @@ public class HUDManager : MonoBehaviour
         if(activeWeapon)
         {
             magazineAmmoUI.text = $"{activeWeapon.bulletsLeft / activeWeapon.bulletsPerBurst}";
-            totalAmmoUI.text = $"{activeWeapon.magazineSize / activeWeapon.bulletsPerBurst}";
-            activeWeapon.WeaponModel model = activeWeapon.thisweaponModel;
+            totalAmmoUI.text = $"{WeaponManager.Instance.CheckAmmoLeftFor(activeWeapon.thisweaponModel)}";
+            Weapon.WeaponModel model = activeWeapon.thisweaponModel;
             ammoTypeUI.sprite = GetAmmoSprite(model);
             activeWeaponUI.sprite = GetWeaponSprite(model);
             if(unActiveWeapon)
@@ -54,6 +60,18 @@ public class HUDManager : MonoBehaviour
         {
             magazineAmmoUI.text = "";
             totalAmmoUI.text = "";
+            ammoTypeUI.sprite = emptySlot;
+            activeWeaponUI.sprite = emptySlot;
+            unActiveWeaponUI.sprite = emptySlot;
+        }
+
+        if(WeaponManager.Instance.lethalsCount <= 0)
+        {
+            lethalUI.sprite = greySlot;
+        }
+        if(WeaponManager.Instance.tacticalCount <= 0)
+        {
+            tacticalUI.sprite = greySlot;
         }
     }
 
@@ -62,9 +80,9 @@ public class HUDManager : MonoBehaviour
         switch(model)
         {
             case Weapon.WeaponModel.M4A1:
-                return Instantiate(Resources.Load<GameObject>("M4A1_Weapon")).GetComponent<SpriteRenderer>().sprite;
+                return Resources.Load<GameObject>("M4A1_Weapon").GetComponent<SpriteRenderer>().sprite;
             case Weapon.WeaponModel.Skorpion:
-                return Instantiate(Resources.Load<GameObject>("Skorpion_Weapon")).GetComponent<SpriteRenderer>().sprite;
+                return Resources.Load<GameObject>("Skorpion_Weapon").GetComponent<SpriteRenderer>().sprite;
             default:
                 return null;
         }
@@ -75,9 +93,9 @@ public class HUDManager : MonoBehaviour
         switch(model)
         {
             case Weapon.WeaponModel.M4A1:
-                return Instantiate(Resources.Load<GameObject>("Rifle_Ammo")).GetComponent<SpriteRenderer>().sprite;
+                return Resources.Load<GameObject>("Rifle_Ammo").GetComponent<SpriteRenderer>().sprite;
             case Weapon.WeaponModel.Skorpion:
-                return Instantiate(Resources.Load<GameObject>("Pistol_Ammo")).GetComponent<SpriteRenderer>().sprite;
+                return Resources.Load<GameObject>("Pistol_Ammo").GetComponent<SpriteRenderer>().sprite;
             default:
                 return null;
         }
@@ -96,7 +114,24 @@ public class HUDManager : MonoBehaviour
         return null;
     }
 
+    public void UpdateThrowables()
+    {
+        lethalAmountUI.text = $"{WeaponManager.Instance.lethalsCount}";
+        tacticalAmountUI.text = $"{WeaponManager.Instance.tacticalCount}";
+        switch(WeaponManager.Instance.equippedLethalType)
+        {
+            case Throwable.ThrowableType.Grenade:
+                lethalUI.sprite = Resources.Load<GameObject>("Grenade").GetComponent<SpriteRenderer>().sprite;
+                break;
+        }
 
+        switch(WeaponManager.Instance.equippedTacticalType)
+        {
+            case Throwable.ThrowableType.Smoke:
+                tacticalUI.sprite = Resources.Load<GameObject>("Smoke").GetComponent<SpriteRenderer>().sprite;
+                break;
+        }
+    }
 
 
 }

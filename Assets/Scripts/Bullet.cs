@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class Bullet : MonoBehaviour
 {
+    public int bulletDamage;
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.CompareTag("Target"))
@@ -22,6 +23,12 @@ public class Bullet : MonoBehaviour
         {
             print("hit a bottle");
             collision.gameObject.GetComponent<Bottle>().Explode();
+        }
+        if(collision.gameObject.CompareTag("Zombie"))
+        {
+            print("hit a zombie");
+            collision.gameObject.GetComponent<Zombie>().TakeDamage(bulletDamage);
+            Destroy(gameObject);
         }
     }
     void CreateBulletImpactEffect(Collision collision)

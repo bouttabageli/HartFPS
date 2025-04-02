@@ -11,6 +11,8 @@ public class SoundManager : MonoBehaviour
     public AudioSource reloadingSoundM4;
     public AudioSource emptySoundM4;
     public AudioSource reloadingSoundSkorpion;
+    public AudioSource throwablesChannel;
+    public AudioClip grenadeSound;
     public AudioClip M4A1Shot;
     public AudioClip SkorpionShot;
 
