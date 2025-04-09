@@ -24,10 +24,14 @@ public class Bullet : MonoBehaviour
             print("hit a bottle");
             collision.gameObject.GetComponent<Bottle>().Explode();
         }
-        if(collision.gameObject.CompareTag("Zombie"))
+        if(collision.gameObject.CompareTag("Enemy"))
         {
-            print("hit a zombie");
-            collision.gameObject.GetComponent<Zombie>().TakeDamage(bulletDamage);
+            print("hit an enemy");
+            if(collision.gameObject.GetComponent<Enemy>().isDead == false)
+            {
+                collision.gameObject.GetComponent<Enemy>().TakeDamage(bulletDamage);
+            }
+            CreateBloodSprayEffect(collision);
             Destroy(gameObject);
         }
     }
@@ -40,5 +44,16 @@ public class Bullet : MonoBehaviour
             Quaternion.LookRotation(contact.normal)
         );
         hole.transform.SetParent(collision.gameObject.transform);
+    }
+
+    void CreateBloodSprayEffect(Collision collision)
+    {
+        ContactPoint contact = collision.contacts[0];
+        GameObject bloodSprayPrefab = Instantiate(
+            GlobalReferences.Instance.bloodSprayEffect, 
+            contact.point, 
+            Quaternion.LookRotation(contact.normal)
+        );
+        bloodSprayPrefab.transform.SetParent(collision.gameObject.transform);
     }
 }

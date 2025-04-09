@@ -28,6 +28,9 @@ public class HUDManager : MonoBehaviour
 
      public GameObject crosshair;
 
+     public TextMeshProUGUI RoundNumberUI;
+ 
+
       private void Awake()
     {
         if(Instance != null && Instance != this)

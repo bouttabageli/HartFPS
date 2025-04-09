@@ -6,6 +6,7 @@ public class AmmoBox : MonoBehaviour
 {
     public int ammoAmount = 200;
     public AmmoType ammoType;
+    public bool Consumable;
 
     public enum AmmoType
     {

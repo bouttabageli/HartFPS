@@ -1,28 +1,15 @@
 using UnityEngine;
+using UnityEngine.AI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 public class Zombie : MonoBehaviour
 {
-    [SerializeField] private int HP = 100;
-    private Animator animator;
-
-    private void Start()
-    {
-        animator = GetComponent<Animator>();
-    }
-
-    public void TakeDamage(int damageAmount)
-    {
-        HP -= damageAmount;
-        if(HP <= 0)
-        {
-            animator.SetTrigger("DIE");
-            Destroy(gameObject);
-        }
-        else
-        {
-            animator.SetTrigger("DAMAGE");
-        }
-    }
+   public ZombieHand zombieHand;
+   public int zombieDamage;
+    
+   private void Start()
+   {
+      zombieHand.damage = zombieDamage;
+   }
 }

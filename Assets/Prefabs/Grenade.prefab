@@ -153,6 +153,7 @@ MonoBehaviour:
   delay: 3
   damageRadius: 20
   explosionForce: 1200
+  damage: 100
   hasBeenThrown: 0
   throwableType: 1
 --- !u!114 &601785088531719247
